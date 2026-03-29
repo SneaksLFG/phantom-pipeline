@@ -80,7 +80,7 @@ If PASS, say PASS with a one-line summary."""
 
 async def call_openai(system: str, user_msg: str, model: str = "gpt-4o") -> str:
     """Call OpenAI API and return text response."""
-    async with httpx.AsyncClient(timeout=120) as client:
+    async with httpx.AsyncClient(timeout=300) as client:
         resp = await client.post(
             "https://api.openai.com/v1/chat/completions",
             headers={"Authorization": f"Bearer {OPENAI_API_KEY}"},
@@ -90,7 +90,7 @@ async def call_openai(system: str, user_msg: str, model: str = "gpt-4o") -> str:
                     {"role": "system", "content": system},
                     {"role": "user", "content": user_msg},
                 ],
-                "max_tokens": 4096,
+                "max_tokens": 16384,
                 "temperature": 0.7,
             },
         )
@@ -100,7 +100,7 @@ async def call_openai(system: str, user_msg: str, model: str = "gpt-4o") -> str:
 
 async def call_claude(system: str, user_msg: str, model: str = "claude-sonnet-4-20250514") -> str:
     """Call Anthropic API and return text response."""
-    async with httpx.AsyncClient(timeout=120) as client:
+    async with httpx.AsyncClient(timeout=300) as client:
         resp = await client.post(
             "https://api.anthropic.com/v1/messages",
             headers={
@@ -110,7 +110,7 @@ async def call_claude(system: str, user_msg: str, model: str = "claude-sonnet-4-
             },
             json={
                 "model": model,
-                "max_tokens": 4096,
+                "max_tokens": 16384,
                 "system": system,
                 "messages": [{"role": "user", "content": user_msg}],
             },
